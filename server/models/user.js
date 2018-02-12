@@ -61,6 +61,18 @@ UserSchema.methods.generateAuthToken = function() {
   })
 }
 
+// to remove the token
+UserSchema.methods.removeToken = function(token) {
+  const user = this;
+
+  return user.update({
+    $pull: { 
+      tokens: {token}
+    }
+  })
+}
+
+
 UserSchema.statics.findByToken = function(token) {
 const User = this;
 var decoded; 
@@ -69,7 +81,7 @@ try {
 } catch(e) {
   return Promise.reject();
 }
-return User.find({
+return User.findOne({
   '_id': decoded._id,
   'tokens.token': token,
   'tokens.access': decoded.access 

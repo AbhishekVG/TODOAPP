@@ -10,7 +10,8 @@ const authenticate = (req, res, next) => {
       req.user = user;
       req.token = token;
       next();
-    }).catch((err) => {
+    })
+    .catch((err) => {
       res.status(400).send(err);
     })
 }
