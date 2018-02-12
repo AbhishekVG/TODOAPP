@@ -50,14 +50,29 @@ UserSchema.methods.toJSON = function() {
 UserSchema.methods.generateAuthToken = function() {
   const user = this;
   const access = 'auth';
-  console.log("))))))))))",user._id.toHexString)
-  console.log("))))))))))",JSON.stringify(user._id))
+  // console.log("))))))))))",user._id.toHexString)
+  // console.log("))))))))))",JSON.stringify(user._id))
   const token = jwt.sign({_id: user._id.toHexString(), access}, 'saltt').toString();
   user.tokens.push({access, token});
 
   return user.save().then(() => {
     return token;
   })
+}
+
+UserSchema.statics.findByToken = function(token) {
+const User = this;
+var decoded; 
+try {
+ decoded = jwt.verify(token, 'saltt');
+} catch(e) {
+  return Promise.reject();
+}
+return User.find({
+  '_id': decoded._id,
+  'tokens.token': token,
+  'tokens.access': decoded.access 
+});
 }
 
 var User = mongoose.model('User', UserSchema);

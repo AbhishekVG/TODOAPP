@@ -8,6 +8,7 @@ const {ObjectID} = require('mongodb');
 var {mongoose} = require('./db/mongoose');
 var {Todo} = require('./models/todo');
 var {User} = require('./models/user');
+var {authenticate} = require('./middleware/authentication');
 
 var app = express();
 const port = process.env.PORT;
@@ -100,7 +101,8 @@ app.patch('/todos/:id', (req, res) => {
 app.post('/users', (req, res) => {
   var body = _.pick(req.body, ['email', 'password']);
   var user = new User(body);
-  user.save().then((uer) => {
+  // console.log(">>>>>>>>>>>", user.__proto__, "<<<<<<<<<<<<<<<<<");//save() toJSON() many other methods are coming through inheritance
+  user.save().then(() => {
     return user.generateAuthToken();
   })
   .then((token) => {
@@ -109,6 +111,10 @@ app.post('/users', (req, res) => {
   .catch((e) => {
     res.status(400).send(e);
   })
+});
+
+app.get('/users/me', authenticate, (req, res) => {
+  res.send(req.user);
 });
 
 app.listen(port, () => {
