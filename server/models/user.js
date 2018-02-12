@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
+const bcrypt = require('bcryptjs');
 // {
 //   email: 'andrew@example.com',
 //   password: 'adpsofijasdfmpoijwerew',
@@ -74,6 +75,24 @@ return User.find({
   'tokens.access': decoded.access 
 });
 }
+
+UserSchema.pre('save', function(next) {
+  const user = this;
+  console.log("kKg", user, user.isModified('password'))
+  console.log("----------------", user.password = '1234567890');
+  console.log("----------------", user.isModified)
+  if(user.isModified('password')) {
+    bcrypt.genSalt(10, (err, salt) => {
+      bcrypt.hash(user.password, salt, (err, hash) => {
+        user.password = hash;
+        console.log('here')
+        next();
+      })
+    })
+  } else {
+    next();
+  }
+})
 
 var User = mongoose.model('User', UserSchema);
 
