@@ -22,9 +22,21 @@ const bcrypt = require('bcryptjs');
 
 //------------------------------------------------bcrypt--------------------------------------------------------
  const password ="abcd";
- bcrypt.genSalt(15, (err, salt) => {
-     bcrypt.hash(password, salt, (err, hash) => {
-         console.log(hash)
+ var hashedPass;
+ var promisE =() => {
+     return new Promise((resolve, reject) => {
+        bcrypt.genSalt(15, (err, salt) => {
+            bcrypt.hash(password, salt, (err, hash) => {
+                console.log(hash)
+                hashedPass = hash.toString();
+                return resolve(hashedPass);
+            })
+        })
      })
- })
+ };
+//  promisE().then(hashedPass => bcrypt.compare('password', hashedPass, (err, res) => {  //res = false
+ promisE().then(hashedPass => bcrypt.compare(password, hashedPass, (err, res) => { //res = true
+     console.log('err = ', err)
+     console.log('res = ', res)
+ }))
 //------------------------------------------------bcrypt--------------------------------------------------------
