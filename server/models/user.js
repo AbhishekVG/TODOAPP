@@ -54,7 +54,7 @@ UserSchema.methods.generateAuthToken = function() {
   // console.log("))))))))))",user._id.toHexString)
   // console.log("))))))))))",JSON.stringify(user._id))
   const token = jwt.sign({_id: user._id.toHexString(), access}, 'saltt').toString();
-  user.tokens.push({access, token});
+  user.tokens.push({access, token});                                                                                    ``
 
   return user.save().then(() => {
     return token;
@@ -80,30 +80,35 @@ return User.find({
 UserSchema.statics.findByCredentials = function(email, password) {
   const User = this;
 
-  User.find({email}).then((user) => {
+  return User.findOne({email}).then((user) => {
+    console.log("user----------->", user)
     if(!user) {
       return Promise.reject('User not found');
     }
-    bcrypt.compare(password, user.password, (err, user) => {
-      if(err) return Promise.reject('wrong password');
-      return Promise.resolve(user);
+    return new Promise((resolve, reject) => {
+      bcrypt.compare(password, user.password, (err, res) => {
+        console.log("res",err,  res)
+        if(err || !res) return reject('wrong password');
+        return resolve(user);
+      })
     })
-  }).catch((err) => {
-    return Promise.reject();
   })
+  // .catch((err) => {
+  //   console.log("India")
+  //   return Promise.reject(err);//the error wrong pass is migrating,plz check
+  // })
 }
 
 //for calling as middleware before save operation
 UserSchema.pre('save', function(next) {
   const user = this;
   console.log("kKg", user, user.isModified('password'))
-  console.log("----------------", user.password = '1234567890');
-  console.log("----------------", user.isModified)
+  // console.log("----------------", user.password = '1234567890');
+  // console.log("----------------", user.isModified)
   if(user.isModified('password')) {
     bcrypt.genSalt(10, (err, salt) => {
       bcrypt.hash(user.password, salt, (err, hash) => {
         user.password = hash;
-        console.log('here')
         next();
       })
     })

@@ -21,7 +21,7 @@ const bcrypt = require('bcryptjs');
 //------------------------------------------------SHA256--------------------------------------------------------
 
 //------------------------------------------------bcrypt--------------------------------------------------------
- const password ="abcd";
+ const password ="password";
  var hashedPass;
  var promisE =() => {
      return new Promise((resolve, reject) => {

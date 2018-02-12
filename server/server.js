@@ -119,10 +119,10 @@ app.get('/users/me', authenticate, (req, res) => {
 
 app.post('/user/login', (req, res) => {
   const body = _.pick(req.body, ['email', 'password']);
-  User.findByCredentials(body.email, body.password).then(() => {
-    res.send(user);
+  User.findByCredentials(body.email, body.password).then((user) => {
+    user.generateAuthToken().then(token => res.header('x-autH', token).send(user))
   }).catch((err) => {
-    res.status(400).send(err);
+    res.status(400).send({err});
   })
 })
 app.listen(port, () => {
