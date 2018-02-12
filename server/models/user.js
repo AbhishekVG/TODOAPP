@@ -76,6 +76,24 @@ return User.find({
 });
 }
 
+//for logining in
+UserSchema.statics.findByCredentials = function(email, password) {
+  const User = this;
+
+  User.find({email}).then((user) => {
+    if(!user) {
+      return Promise.reject('User not found');
+    }
+    bcrypt.compare(password, user.password, (err, user) => {
+      if(err) return Promise.reject('wrong password');
+      return Promise.resolve(user);
+    })
+  }).catch((err) => {
+    return Promise.reject();
+  })
+}
+
+//for calling as middleware before save operation
 UserSchema.pre('save', function(next) {
   const user = this;
   console.log("kKg", user, user.isModified('password'))
