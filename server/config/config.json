@@ -1,7 +1,7 @@
 {
     "development" : { 
         "PORT": 3000,
-        "MONGODB_URI": "mongodb://localhost:27017/TodoApp",
+        "MONGODB_URI": "mongodb://todoappDB:password1234@ds125578.mlab.com:25578/todoapp",
         "JWT": "saltt"
     },
     "test" : {
