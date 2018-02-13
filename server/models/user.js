@@ -114,7 +114,7 @@ UserSchema.statics.findByCredentials = function(email, password) {
 //for calling as middleware before save operation
 UserSchema.pre('save', function(next) {
   const user = this;
-  console.log("kKg", user, user.isModified('password'))
+  // console.log("kKg", user, user.isModified('password'))
   // console.log("----------------", user.password = '1234567890');
   // console.log("----------------", user.isModified)
   if(user.isModified('password')) {
