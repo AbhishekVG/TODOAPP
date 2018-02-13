@@ -142,7 +142,8 @@ app.post('/user/login', (req, res) => {
   }).catch((err) => {
     res.status(400).send({err});
   })
-})
+});
+
 app.listen(port, () => {
   console.log(`Started up at port ${port}`);
 });
